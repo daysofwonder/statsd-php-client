@@ -5,7 +5,7 @@ namespace Liuggio\StatsdClient\Entity;
 use Liuggio\StatsdClient\Entity\StatsdData;
 
 
-class StatsdDataTest extends \PHPUnit_Framework_TestCase
+class StatsdDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetMessage()
     {

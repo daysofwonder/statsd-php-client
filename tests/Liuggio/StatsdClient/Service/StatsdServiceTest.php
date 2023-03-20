@@ -4,12 +4,12 @@ namespace Liuggio\StatsdClient\Entity;
 
 use Liuggio\StatsdClient\Service\StatsdService;
 
-class StatsdServiceTest extends \PHPUnit_Framework_TestCase
+class StatsdServiceTest extends \PHPUnit\Framework\TestCase
 {
     private $clientMock;
     private $factoryMock;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->clientMock = $this->getMockBuilder('Liuggio\StatsdClient\StatsdClient')
             ->disableOriginalConstructor()

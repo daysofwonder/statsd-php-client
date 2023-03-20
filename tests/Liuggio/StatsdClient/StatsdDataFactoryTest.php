@@ -4,11 +4,11 @@ namespace Liuggio\StatsdClient\Factory;
 
 use Liuggio\StatsdClient\Factory\StatsdDataFactory;
 
-class StatsDataFactoryTest extends \PHPUnit_Framework_TestCase
+class StatsDataFactoryTest extends \PHPUnit\Framework\TestCase
 {
     private $statsDataFactory;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->statsDataFactory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
     }
@@ -30,9 +30,9 @@ class StatsDataFactoryTest extends \PHPUnit_Framework_TestCase
         $valueFloat = (string) floatval($value);
 
         $obj = $this->statsDataFactory->timing($key, $value);
-        $this->assertEquals($key, $obj->getKey());
-        $this->assertContains($valueFloat, $obj->getValue());
-        $this->assertContains('ms', $obj->getMetric());
+        $this->assertStringContainsString($key, $obj->getKey());
+        $this->assertStringContainsString($valueFloat, $obj->getValue());
+        $this->assertStringContainsString('ms', $obj->getMetric());
     }
 
     public function testProduceStatsdDataDecrement()

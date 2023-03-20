@@ -8,7 +8,7 @@ use Liuggio\StatsdClient\Monolog\Formatter\StatsDFormatter;
 /**
  * @covers Liuggio\StatsdClient\Monolog\Formatter\StatsDFormatter
  */
-class StatsDFormatterTest extends \PHPUnit_Framework_TestCase
+class StatsDFormatterTest extends \PHPUnit\Framework\TestCase
 {
     public function testBatchFormat()
     {

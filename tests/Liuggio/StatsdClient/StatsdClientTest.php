@@ -5,12 +5,12 @@ namespace Liuggio\StatsdClient;
 use Liuggio\StatsdClient\StatsdClient;
 use Liuggio\StatsdClient\Entity\StatsdData;
 
-class StatsdClientTest extends \PHPUnit_Framework_TestCase
+class StatsdClientTest extends \PHPUnit\Framework\TestCase
 {
 
     public function mockSenderWithAssertionOnWrite($messageToAssert=null) {
 
-        $mock = $this->getMockBuilder('\Liuggio\StatsdClient\Sender\SocketSender') ->disableOriginalConstructor() ->getMock();
+        $mock = $this->getMockBuilder('\Liuggio\StatsdClient\Sender\SocketSender')->disableOriginalConstructor() ->getMock();
 
         $phpUnit = $this;
         $mock->expects($this->any())
@@ -47,7 +47,7 @@ class StatsdClientTest extends \PHPUnit_Framework_TestCase
 
     public function mockFactory() {
 
-        $mock =  $this->getMock('\Liuggio\StatsdClient\Factory\StatsdDataFactory', array('timing'));
+        $mock =  $this->getMockBuilder('\Liuggio\StatsdClient\Factory\StatsdDataFactory', array('timing'))->getMock();
 
         $statsData = new StatsdData();
         $statsData->setKey('key');
@@ -207,7 +207,7 @@ class StatsdClientTest extends \PHPUnit_Framework_TestCase
 
     public function testSampleRate()
     {
-        $senderMock = $this->getMock('Liuggio\StatsdClient\Sender\SenderInterface');
+        $senderMock = $this->getMockBuilder('Liuggio\StatsdClient\Sender\SenderInterface')->getMock();
         $senderMock
             ->expects($this->once())
             ->method('open')

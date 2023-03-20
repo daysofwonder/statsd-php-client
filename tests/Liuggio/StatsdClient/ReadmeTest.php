@@ -7,7 +7,7 @@ use Liuggio\StatsdClient\Factory\StatsdDataFactory;
 //use Liuggio\StatsdClient\Sender\SocketSender;
 
 
-class ReadmeTest extends \PHPUnit_Framework_TestCase
+class ReadmeTest extends \PHPUnit\Framework\TestCase
 {
     public function testFullUsageWithObject() {
 
@@ -32,19 +32,19 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
 
     public function testFullUsageArray() {
-        
+
         $sender = $this->mockSender();
         // $sender = new Sender();
 
         // StatsdClient(SenderInterface $sender, $host = 'localhost', $port = 8126, $protocol='udp', $reducePacket = true, $fail_silently = true)
         $client = new StatsdClient($sender, $host = 'localhost', $port = 8126, 'udp', $reducePacket = true, $fail_silently = true);
- 
+
         $data[] ="increment:1|c";
         $data[] ="set:value|s";
         $data[] ="gauge:value|g";
         $data[] = "timing:10|ms";
         $data[] = "decrement:-1|c";
-        $data[] ="key:1|c";         
+        $data[] ="key:1|c";
 
         // send the data as array or directly as object
         $client->send($data);
@@ -52,7 +52,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
 
     private function mockSender() {
-        $sender =  $this->getMock('\Liuggio\StatsdClient\Sender\SenderInterface', array('open', 'write', 'close'));
+        $sender =  $this->getMockBuilder('\Liuggio\StatsdClient\Sender\SenderInterface', array('open', 'write', 'close'))->getMock();
         $sender->expects($this->once())
             ->method('open')
             ->will($this->returnValue(true));
