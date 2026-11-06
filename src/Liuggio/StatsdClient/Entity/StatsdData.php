@@ -15,7 +15,7 @@ class StatsdData implements StatsdDataInterface
     /**
      * @param mixed $key
      */
-    public function setKey(mixed $key)
+    public function setKey(mixed $key) : void
     {
         $this->key = $key;
     }
@@ -31,7 +31,7 @@ class StatsdData implements StatsdDataInterface
     /**
      * @param mixed $value
      */
-    public function setValue(mixed $value)
+    public function setValue(mixed $value) : void
     {
         $this->value = $value;
     }
@@ -45,7 +45,7 @@ class StatsdData implements StatsdDataInterface
     }
 
 
-    public function setMetric(string $metric)
+    public function setMetric(string $metric) : void
     {
         $this->metric = $metric;
     }

@@ -44,7 +44,7 @@ class StatsDHandler extends AbstractProcessingHandler
      * @param StatsdDataFactoryInterface $statsDFactory The Factory creates the StatsDPacket
      * @param string $prefix Statsd key prefix
      * @param integer $level The minimum logging level at which this handler will be triggered
-     * @param Boolean $bubble Whether the messages that are handled can bubble up the stack or not
+     * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct(StatsdClientInterface $statsDService, ?StatsdDataFactoryInterface $statsDFactory, $prefix, int|string|Level $level = \Monolog\Level::Debug, bool $bubble = true)
     {

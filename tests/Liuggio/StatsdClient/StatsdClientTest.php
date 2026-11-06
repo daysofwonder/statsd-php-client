@@ -214,7 +214,7 @@ class StatsdClientTest extends \PHPUnit\Framework\TestCase
         $senderMock
             ->expects($this->once())
             ->method('open')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
         $senderMock
             ->expects($this->once())

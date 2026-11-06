@@ -44,7 +44,7 @@ Interface StatsdDataFactoryInterface
      * @param  string|array $key   The metric(s) to set.
      * @param  float        $value The value for the stats.
      *
-     * @return array
+     * @return StatsdDataInterface
      **/
     function set($key, $value);
 
@@ -56,7 +56,7 @@ Interface StatsdDataFactoryInterface
      * @param string|array $key        The metric(s) to increment.
      * @param float|1      $sampleRate The rate (0-1) for sampling.
      *
-     * @return array
+     * @return StatsdDataInterface
      **/
     function increment($key);
 
@@ -68,7 +68,7 @@ Interface StatsdDataFactoryInterface
      * @param string|array $key        The metric(s) to decrement.
      * @param float|1      $sampleRate The rate (0-1) for sampling.
      *
-     * @return mixed
+     * @return StatsdDataInterface
      **/
     function decrement($key);
 
@@ -80,7 +80,7 @@ Interface StatsdDataFactoryInterface
      * @param string|array $key        The metric(s) to decrement.
      * @param integer      $delta      The delta to add to the each metric
      *
-     * @return mixed
+     * @return StatsdDataInterface
      **/
     function updateCount($key, $delta);
 

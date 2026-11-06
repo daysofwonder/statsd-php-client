@@ -14,18 +14,21 @@ interface StatsdDataInterface
      * @return mixed
      */
     function getKey() : mixed;
+    public function setKey(mixed $key) : void;
 
     /**
      * @abstract
      * @return mixed
      */
     function getValue() : mixed;
+    public function setValue(mixed $value) : void;
 
     /**
      * @abstract
      * @return string
      */
     function getMetric() : string;
+    public function setMetric(string $metric) : void;
 
     /**
      * @abstract

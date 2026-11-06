@@ -58,13 +58,13 @@ class StatsdClient implements StatsdClientInterface
      * All metrics can also be batch send in a single UDP packet, separated by a newline character.
      *
      * @param array $reducedMetrics
-     * @param string $metric
+     * @param mixed $metric
      *
      * @return array
      */
-    private static function doReduce($reducedMetrics, string $metric)
+    private static function doReduce($reducedMetrics, mixed $metric)
     {
-        $metricLength = strlen($metric);
+        $metricLength = strlen((string) $metric);
         $lastReducedMetric = count($reducedMetrics) > 0 ? end($reducedMetrics) : null;
 
         if ($metricLength >= self::MAX_UDP_SIZE_STR
