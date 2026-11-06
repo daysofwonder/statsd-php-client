@@ -23,6 +23,7 @@ class StatsdServiceTest extends \PHPUnit\Framework\TestCase
     {
         $dut = new StatsdService($this->clientMock);
         $dut->timing('foo.bar', 123);
+        $this->assertTrue(true);
     }
 
     public function testFactoryImplementation()

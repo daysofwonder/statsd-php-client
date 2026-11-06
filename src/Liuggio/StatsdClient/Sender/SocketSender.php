@@ -6,9 +6,9 @@ use Liuggio\StatsdClient\Exception\InvalidArgumentException;
 
 Class SocketSender implements SenderInterface
 {
-    private $port;
-    private $host;
-    private $protocol;
+    private mixed $port;
+    private string $host;
+    private string $protocol;
 
     public function __construct($hostname = 'localhost', $port = 8126, $protocol = 'udp')
     {

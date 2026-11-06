@@ -11,37 +11,37 @@ interface StatsdDataInterface
 
     /**
      * @abstract
-     * @return string
+     * @return mixed
      */
-    function getKey();
+    function getKey() : mixed;
 
     /**
      * @abstract
      * @return mixed
      */
-    function getValue();
+    function getValue() : mixed;
 
     /**
      * @abstract
      * @return string
      */
-    function getMetric();
+    function getMetric() : string;
 
     /**
      * @abstract
      * @return string
      */
-    function getMessage();
+    function getMessage() : string;
 
     /**
      * @abstract
      * @return float
      */
-    function getSampleRate();
+    function getSampleRate() : float;
 
     /**
      * @abstract
      * @return string
      */
-    function __toString();
+    function __toString() : string;
 }

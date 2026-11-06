@@ -31,7 +31,7 @@ class StatsdService implements StatsdDataFactoryInterface
     /**
      * @var float
      */
-    protected $samplingRate;
+    protected float $samplingRate;
 
     private $samplingFunction;
 
@@ -42,7 +42,7 @@ class StatsdService implements StatsdDataFactoryInterface
      */
     public function __construct(
         StatsdClient $client,
-        StatsdDataFactoryInterface $factory = null,
+        ?StatsdDataFactoryInterface $factory = null,
         $samplingRate = 1
     ) {
         $this->client = $client;
@@ -61,7 +61,7 @@ class StatsdService implements StatsdDataFactoryInterface
      *
      * @param float $samplingRate
      */
-    public function setSamplingRate($samplingRate)
+    public function setSamplingRate(float $samplingRate)
     {
         if ($samplingRate <= 0.0 || 1.0 < $samplingRate) {
             throw new \LogicException('Sampling rate shall be within ]0, 1]');
@@ -75,7 +75,7 @@ class StatsdService implements StatsdDataFactoryInterface
     /**
      * @return float
      */
-    public function getSamplingRate()
+    public function getSamplingRate() : float
     {
         return $this->samplingRate;
     }

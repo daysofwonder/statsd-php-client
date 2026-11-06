@@ -7,11 +7,13 @@ use Liuggio\StatsdClient\Entity\StatsdDataInterface;
 class StatsdDataFactory implements StatsdDataFactoryInterface
 {
     /**
-     * @var StatsdDataInterface
+     * @var string
      */
-    private $entityClass;
+    private string $entityClass;
 
-    public function __construct($entity_class = '\Liuggio\StatsdClient\Entity\StatsdData')
+    protected bool $failSilently = false;
+
+    public function __construct(string $entity_class = '\Liuggio\StatsdClient\Entity\StatsdData')
     {
         $this->setEntityClass($entity_class);
     }
@@ -19,7 +21,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function timing($key, $time)
+    public function timing($key, $time) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, $time, StatsdDataInterface::STATSD_METRIC_TIMING);
     }
@@ -27,7 +29,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function gauge($key, $value)
+    public function gauge($key, $value) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, $value, StatsdDataInterface::STATSD_METRIC_GAUGE);
     }
@@ -35,7 +37,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function set($key, $value)
+    public function set($key, $value) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, $value, StatsdDataInterface::STATSD_METRIC_SET);
     }
@@ -43,7 +45,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function increment($key)
+    public function increment($key) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, 1, StatsdDataInterface::STATSD_METRIC_COUNT);
     }
@@ -51,7 +53,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function decrement($key)
+    public function decrement($key) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, -1, StatsdDataInterface::STATSD_METRIC_COUNT);
     }
@@ -59,7 +61,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function updateCount($key, $delta)
+    public function updateCount($key, $delta) : StatsdDataInterface
     {
         return $this->produceStatsdData($key, $delta, StatsdDataInterface::STATSD_METRIC_COUNT);
     }
@@ -67,7 +69,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function produceStatsdData($key, $value = 1, $metric = StatsdDataInterface::STATSD_METRIC_COUNT)
+    public function produceStatsdData($key, $value = 1, $metric = StatsdDataInterface::STATSD_METRIC_COUNT) : StatsdDataInterface
     {
         $statsdData = $this->produceStatsdDataEntity();
 
@@ -89,7 +91,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function produceStatsdDataEntity()
+    public function produceStatsdDataEntity() : StatsdDataInterface
     {
         $statsdData = $this->getEntityClass();
 
@@ -99,7 +101,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function setFailSilently($failSilently)
+    public function setFailSilently(bool $failSilently)
     {
         $this->failSilently = $failSilently;
     }
@@ -107,7 +109,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function getFailSilently()
+    public function getFailSilently() : bool
     {
         return $this->failSilently;
     }
@@ -115,7 +117,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function setEntityClass($entityClass)
+    public function setEntityClass(string $entityClass)
     {
         $this->entityClass = $entityClass;
     }
@@ -123,7 +125,7 @@ class StatsdDataFactory implements StatsdDataFactoryInterface
     /**
      * {@inheritDoc}
      **/
-    public function getEntityClass()
+    public function getEntityClass() : string
     {
         return $this->entityClass;
     }

@@ -4,50 +4,53 @@ namespace Liuggio\StatsdClient;
 
 use Liuggio\StatsdClient\StatsdClient;
 use Liuggio\StatsdClient\Entity\StatsdData;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 class StatsdClientTest extends \PHPUnit\Framework\TestCase
 {
 
-    public function mockSenderWithAssertionOnWrite($messageToAssert=null) {
+    public function mockSenderWithAssertionOnWrite(string|array|null $messageToAssert = null) : MockObject
+    {
 
-        $mock = $this->getMockBuilder('\Liuggio\StatsdClient\Sender\SocketSender')->disableOriginalConstructor() ->getMock();
+        $mock = $this->getMockBuilder('\Liuggio\StatsdClient\Sender\SocketSender')->disableOriginalConstructor()->getMock();
 
         $phpUnit = $this;
         $mock->expects($this->any())
             ->method('open')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         // if the input is an array expects a call foreach item
         if (is_array($messageToAssert)) {
-            $index = 0;
+            $returns = [];
             foreach ($messageToAssert as $oneMessage) {
-                $index++;
-                $mock->expects($this->at($index))
-                    ->method('write')
-                    ->will($this->returnCallBack(function($fp, $message) use ($phpUnit, $oneMessage) {
-                      $phpUnit->assertEquals($message, $oneMessage);
-                }));
+                $returns[] = [function($fp, $message) use ($phpUnit, $oneMessage) {
+                        $phpUnit->assertEquals($message, $oneMessage);
+                }];
             }
+            $mock->expects($this->exactly(count($messageToAssert)))
+                ->method('write')
+                ->willReturnMap($returns);
         } else if (null !== $messageToAssert){
             // if the input is a string expects only once
             $mock->expects($this->once())
                 ->method('write')
-                ->will($this->returnCallBack(function($fp, $message) use ($phpUnit, $messageToAssert) {
-                 $phpUnit->assertEquals($message, $messageToAssert);
-            }));
+                ->willReturnCallBack(function($fp, $message) use ($phpUnit, $messageToAssert) {
+                    $phpUnit->assertEquals($message, $messageToAssert);
+            });
         }
         return $mock;
     }
 
-    public function mockStatsdClientWithAssertionOnWrite($messageToAssert) {
+    public function mockStatsdClientWithAssertionOnWrite(string|array|null $messageToAssert) {
 
         $mockSender = $this->mockSenderWithAssertionOnWrite($messageToAssert);
 
         return new StatsdClient($mockSender, false, false);
     }
 
-    public function mockFactory() {
-
-        $mock =  $this->getMockBuilder('\Liuggio\StatsdClient\Factory\StatsdDataFactory', array('timing'))->getMock();
+    public function mockFactory()
+    {
+        $mock =  $this->getMockBuilder('\Liuggio\StatsdClient\Factory\StatsdDataFactory')->onlyMethods(['timing'])->getMock();
 
         $statsData = new StatsdData();
         $statsData->setKey('key');
@@ -57,7 +60,7 @@ class StatsdClientTest extends \PHPUnit\Framework\TestCase
         $phpUnit = $this;
         $mock->expects($this->any())
             ->method('timing')
-            ->will($this->returnValue($statsData));
+            ->willReturn($statsData);
 
         return $mock;
     }
@@ -103,7 +106,7 @@ class StatsdClientTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provider
      */
-    public function testPrepareAndSend($statsdInput, $assertion) {
+    public function testPrepareAndSend(array|StatsdData $statsdInput, string|array $assertion) {
 
         $statsdMock = $this->mockStatsdClientWithAssertionOnWrite($assertion);
         $statsdMock->send($statsdInput);
@@ -112,7 +115,7 @@ class StatsdClientTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider providerSend
      */
-    public function testSend($array, $assertion) {
+    public function testSend(array $array, array|string $assertion) {
 
         $statsdMock = $this->mockStatsdClientWithAssertionOnWrite($assertion);
         $statsdMock->send($array);

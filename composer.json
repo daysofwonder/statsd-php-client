@@ -18,13 +18,13 @@
         "psr-0": {"Liuggio": "src/"}
     },
     "autoload-dev": {
-      "psr-0": {"Liuggio": "tests/"}
+        "psr-0": {"Liuggio": "tests/"}
     },
     "require-dev": {
-        "monolog/monolog": "^1.2",
-        "phpunit/phpunit": "^9.6.5"
+        "monolog/monolog": "^3.0",
+        "phpunit/phpunit": "^10.0"
     },
     "suggest": {
-        "monolog/monolog": "Monolog, in order to do generate statistic from log >=1.2.0)"
+        "monolog/monolog": "Monolog, in order to do generate statistic from log >=3.0)"
     }
 }

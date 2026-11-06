@@ -19,5 +19,5 @@ Interface StatsdClientInterface
      *
      * @return integer the data sent in bytes
      */
-    function send($data, $sampleRate = 1);
+    function send(array|string|StatsdDataInterface $data, float|int $sampleRate = 1) : ?int;
 }

@@ -58,11 +58,11 @@ class StatsdClient implements StatsdClientInterface
      * All metrics can also be batch send in a single UDP packet, separated by a newline character.
      *
      * @param array $reducedMetrics
-     * @param array $metric
+     * @param string $metric
      *
      * @return array
      */
-    private static function doReduce($reducedMetrics, $metric)
+    private static function doReduce($reducedMetrics, string $metric)
     {
         $metricLength = strlen($metric);
         $lastReducedMetric = count($reducedMetrics) > 0 ? end($reducedMetrics) : null;
@@ -123,14 +123,14 @@ class StatsdClient implements StatsdClientInterface
      *
      * {@inheritDoc}
      */
-    public function send($data, $sampleRate = 1)
+    public function send(array|string|StatsdDataInterface $data, float|int $sampleRate = 1) : ?int
     {
         // check format
         if ($data instanceof StatsdDataInterface || is_string($data)) {
             $data = array($data);
         }
         if (!is_array($data) || empty($data)) {
-            return;
+            return null;
         }
         // add sampling
         if ($sampleRate < 1) {
@@ -144,7 +144,7 @@ class StatsdClient implements StatsdClientInterface
         try {
             $fp = $this->getSender()->open();
             if (!$fp) {
-                return;
+                return null;
             }
             $written = 0;
             foreach ($data as $key => $message) {
@@ -161,15 +161,15 @@ class StatsdClient implements StatsdClientInterface
     /**
      * @param boolean $failSilently
      */
-    public function setFailSilently($failSilently)
+    public function setFailSilently(bool $failSilently)
     {
         $this->failSilently = $failSilently;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getFailSilently()
+    public function getFailSilently() : bool
     {
         return $this->failSilently;
     }

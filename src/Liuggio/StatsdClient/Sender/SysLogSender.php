@@ -7,7 +7,7 @@ Class SysLogSender implements SenderInterface
 {
     private $priority;
 
-    public function __construct($priority = LOG_INFO)
+    public function __construct(int $priority = LOG_INFO)
     {
         $this->priority = $priority;
     }

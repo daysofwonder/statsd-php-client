@@ -2,7 +2,6 @@
 
 namespace Liuggio\StatsdClient\Monolog\Handler;
 
-use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Formatter\FormatterInterface;
 
@@ -10,6 +9,8 @@ use Liuggio\StatsdClient\Monolog\Formatter\StatsDFormatter;
 use Liuggio\StatsdClient\Factory\StatsdDataFactoryInterface;
 use Liuggio\StatsdClient\Factory\StatsdDataFactory;
 use Liuggio\StatsdClient\StatsdClientInterface;
+use Monolog\Level;
+use Monolog\LogRecord;
 
 /**
  * A processing handler for StatsD.
@@ -45,7 +46,7 @@ class StatsDHandler extends AbstractProcessingHandler
      * @param integer $level The minimum logging level at which this handler will be triggered
      * @param Boolean $bubble Whether the messages that are handled can bubble up the stack or not
      */
-    public function __construct(StatsdClientInterface $statsDService, StatsdDataFactoryInterface $statsDFactory = null, $prefix, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(StatsdClientInterface $statsDService, ?StatsdDataFactoryInterface $statsDFactory, $prefix, int|string|Level $level = \Monolog\Level::Debug, bool $bubble = true)
     {
         parent::__construct($level, $bubble);
 
@@ -57,7 +58,7 @@ class StatsDHandler extends AbstractProcessingHandler
     /**
      * {@inheritdoc}
      */
-    public function close()
+    public function close() : void
     {
         $this->statsDService->send($this->buffer);
     }
@@ -65,13 +66,18 @@ class StatsDHandler extends AbstractProcessingHandler
     /**
      * {@inheritdoc}
      */
-    protected function write(array $record)
+    protected function write(LogRecord $record) : void
     {
         $records = is_array($record['formatted']) ? $record['formatted'] : array($record['formatted']);
 
-        foreach ($records as $record) {
-            if (!empty($record)) {
-                $this->buffer[] = $this->statsDFactory->increment(sprintf('%s.%s', $this->getPrefix(), $record));
+        foreach ($records as $rec) {
+            if (!empty($rec)) {
+                $recs = explode("\n", $rec);
+                foreach ($recs as $r) {
+                    if (!empty($r)) {
+                        $this->buffer[] = $this->statsDFactory->increment(sprintf('%s.%s', $this->getPrefix(), $r));
+                    }
+                }
             }
         }
     }
@@ -81,7 +87,7 @@ class StatsDHandler extends AbstractProcessingHandler
      *
      * @return FormatterInterface
      */
-    protected function getDefaultFormatter()
+    protected function getDefaultFormatter() : FormatterInterface
     {
         return new StatsDFormatter();
     }

@@ -3,6 +3,7 @@
 namespace Liuggio\StatsdClient\Monolog\Formatter;
 
 use Monolog\Formatter\LineFormatter;
+use Monolog\LogRecord;
 
 /**
  * Formats incoming records in order to be a perfect StatsD key.
@@ -58,25 +59,24 @@ class StatsDFormatter extends LineFormatter
     /**
      * {@inheritdoc}
      */
-    public function format(array $record)
+    public function format(LogRecord $record) : string
     {
-        $vars = $this->normalize($record);
-
+        $vars = $this->normalize($record->toArray());
         $firstRow = $this->format;
-        $output = array();
+        $output = '';
 
         $vars['short_message'] = $this->getFirstWords($vars['message']);
         foreach ($vars as $var => $val) {
             $firstRow = str_replace('%' . $var . '%', $this->convertToString($val), $firstRow);
         }
-        $output[] = $firstRow;
+        $output = $firstRow . "\n";
         // creating more rows for context content
         if ($this->logContext && isset($vars['context'])) {
             foreach ($vars['context'] as $key => $parameter) {
                 if (!is_string($parameter)) {
-                    $parameter = json_encode($parameter);
+                    $parameter = json_encode($parameter, JSON_FORCE_OBJECT);
                 }
-                $output[] = sprintf("%s.context.%s.%s", $firstRow, $key, $parameter);
+                $output .= sprintf("%s.context.%s.%s\n", $firstRow, $key, $parameter);
             }
         }
         // creating more rows for extra content
@@ -85,7 +85,7 @@ class StatsDFormatter extends LineFormatter
                 if (!is_string($parameter)) {
                     $parameter = json_encode($parameter);
                 }
-                $output[] = sprintf("%s.extra.%s.%s", $firstRow, $key, $parameter);
+                $output .= sprintf("%s.extra.%s.%s\n", $firstRow, $key, $parameter);
             }
         }
 
@@ -95,11 +95,11 @@ class StatsDFormatter extends LineFormatter
     /**
      * {@inheritdoc}
      */
-    public function formatBatch(array $records)
+    public function formatBatch(array $records) : string
     {
-        $output = array();
+        $output = '';
         foreach ($records as $record) {
-            $output = array_merge($output, $this->format($record));
+            $output .= $this->format($record);
         }
 
         return $output;

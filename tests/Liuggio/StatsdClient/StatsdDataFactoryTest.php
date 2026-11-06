@@ -4,9 +4,9 @@ namespace Liuggio\StatsdClient\Factory;
 
 use Liuggio\StatsdClient\Factory\StatsdDataFactory;
 
-class StatsDataFactoryTest extends \PHPUnit\Framework\TestCase
+class StatsdDataFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    private $statsDataFactory;
+    private StatsdDataFactory $statsDataFactory;
 
     protected function setUp() : void
     {

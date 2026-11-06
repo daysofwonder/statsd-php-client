@@ -4,24 +4,17 @@ namespace Liuggio\StatsdClient\Tests\Monolog\Handler;
 
 use Monolog\Logger;
 use Liuggio\StatsdClient\Monolog\Handler\StatsDHandler;
-
+use Monolog\Level;
+use Monolog\LogRecord;
 
 class StatsDHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @return array Record
+     * @return LogRecord Record
      */
-    protected function getRecord($level = Logger::WARNING, $message = 'test', $context = array())
+    protected function getRecord(Level $level = Level::Warning, $message = 'test', $context = array()) : LogRecord
     {
-        return array(
-            'message' => $message,
-            'context' => $context,
-            'level' => $level,
-            'level_name' => Logger::getLevelName($level),
-            'channel' => 'test',
-            'datetime' => \DateTime::createFromFormat('U.u', sprintf('%.6F', microtime(true))),
-            'extra' => array(),
-        );
+        return new LogRecord(\DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true))), 'test', $level, $message, $context);
     }
 
     /**
@@ -30,23 +23,23 @@ class StatsDHandlerTest extends \PHPUnit\Framework\TestCase
     protected function getMultipleRecords()
     {
         return array(
-            $this->getRecord(Logger::DEBUG, 'debug message 1'),
-            $this->getRecord(Logger::DEBUG, 'debug message 2'),
-            $this->getRecord(Logger::INFO, 'information'),
-            $this->getRecord(Logger::WARNING, 'warning'),
-            $this->getRecord(Logger::ERROR, 'error')
+            $this->getRecord(Level::Debug, 'debug message 1'),
+            $this->getRecord(Level::Debug, 'debug message 2'),
+            $this->getRecord(Level::Info, 'information'),
+            $this->getRecord(Level::Warning, 'warning'),
+            $this->getRecord(Level::Error, 'error')
         );
     }
 
     /**
-     * @return Monolog\Formatter\FormatterInterface
+     * @return \Monolog\Formatter\FormatterInterface
      */
     protected function getIdentityFormatter()
     {
         $formatter = $this->getMockBuilder('Monolog\\Formatter\\FormatterInterface')->getMock();
         $formatter->expects($this->any())
             ->method('format')
-            ->will($this->returnCallback(function($record) { return $record['message']; }));
+            ->willReturnCallback(function($record) { return $record['message']; });
 
         return $formatter;
     }
@@ -66,17 +59,17 @@ class StatsDHandlerTest extends \PHPUnit\Framework\TestCase
 
         $factory->expects($this->any())
             ->method('increment')
-            ->will($this->returnCallback(function ($input){
+            ->willReturnCallback(function ($input){
                 return sprintf('%s|c|1', $input);
-            }));
+            });
 
         $prefixToAssert = 'prefix';
         $messageToAssert = 'test-msg';
 
-        $record = $this->getRecord(Logger::WARNING, $messageToAssert, array('data' => new \stdClass, 'foo' => 34));
+        $record = $this->getRecord(Level::Warning, $messageToAssert, array('data' => new \stdClass, 'foo' => 34));
 
         $assert = array(sprintf('%s.test.WARNING.%s|c|1',$prefixToAssert, $messageToAssert),
-            sprintf('%s.test.WARNING.%s.context.data.[object] (stdClass: {})|c|1',$prefixToAssert, $messageToAssert),
+            sprintf('%s.test.WARNING.%s.context.data.{"stdClass":{}}|c|1',$prefixToAssert, $messageToAssert),
             sprintf('%s.test.WARNING.%s.context.foo.34|c|1',$prefixToAssert, $messageToAssert));
 
         $client->expects($this->once())
